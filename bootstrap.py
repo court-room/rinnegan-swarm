@@ -13,11 +13,14 @@ class DockerClient:
 
         for requested_network in requested_networks:
             if requested_network not in current_networks:
-                driver = (
+                network_driver = (
                     "bridge" if "database" in requested_network else "overlay"
                 )
                 self.client.networks.create(
-                    name=requested_network, driver=driver, attachable=True,
+                    name=requested_network,
+                    driver=network_driver,
+                    attachable=True,
+                    scope="swarm",
                 )
                 print(f"* Successfully created {requested_network}")
                 continue

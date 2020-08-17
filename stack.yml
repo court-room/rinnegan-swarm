@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.8"
 
 volumes:
   data:
@@ -23,7 +23,7 @@ secrets:
     external: true
 
 services:
-  postgres-master:
+  postgres-primary:
     image: onlinejudge95/rinnegan-postgres
     networks:
       - database
@@ -35,12 +35,13 @@ services:
     deploy:
       placement:
         constraints:
-          - node.labels.type == master
+          - node.role == worker
+          - node.labels.type == primary
     environment:
       POSTGRES_PASSWORD_FILE: /run/secrets/database-password
       POSTGRES_USER_FILE: /run/secrets/database-user
 
-  postgres-slave:
+  postgres-replica:
     image: onlinejudge95/rinnegan-postgres
     networks:
       - database
@@ -52,7 +53,8 @@ services:
     deploy:
       placement:
         constraints:
-          - node.labels.type == slave
+          - node.role == worker
+          - node.labels.type == replica
     environment:
       POSTGRES_PASSWORD_FILE: /run/secrets/database-password
       POSTGRES_USER_FILE: /run/secrets/database-user
