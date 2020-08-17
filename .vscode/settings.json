@@ -1,0 +1,7 @@
+{
+  "files.autoSave": "onFocusChange",
+  "files.insertFinalNewline": true,
+  "python.formatting.provider": "black",
+  "python.formatting.blackPath": "./env/bin/black",
+  "python.formatting.blackArgs": ["--config", "pyproject.toml", "."]
+}
