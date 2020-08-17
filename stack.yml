@@ -17,19 +17,26 @@ networks:
     name: "rinnegan-frontend-network"
 
 secrets:
-  database-password:
+  pg-pool-sr-check-password:
     external: true
-  database-user:
+  postgresql-postgres-password:
+    external: true
+  postgresql-password:
+    external: true
+  replication-manager-password:
     external: true
 
 services:
   postgres-primary:
-    image: onlinejudge95/rinnegan-postgres
+    image: bitnami/postgresql-repmgr:11-debian-10
     networks:
       - database
+    ports:
+      - 5432
     secrets:
-      - database-password
-      - database-user
+      - postgresql-postgres-password
+      - postgresql-password
+      - replication-manager-password
     volumes:
       - data:/var/lib/postgresql/data
     deploy:
@@ -38,16 +45,27 @@ services:
           - node.role == worker
           - node.labels.type == primary
     environment:
-      POSTGRES_PASSWORD_FILE: /run/secrets/database-password
-      POSTGRES_USER_FILE: /run/secrets/database-user
+      POSTGRESQL_USERNAME: rinnegan-postgres
+      POSTGRESQL_DATABASE: rinnegan
+      POSTGRESQL_POSTGRES_PASSWORD_FILE: /run/secrets/postgresql-postgres-password
+      POSTGRESQL_PASSWORD_FILE: /run/secrets/postgresql-password
+      REPMGR_PASSWORD_FILE: /run/secrets/replication-manager-password
+      POSTGRESQL_NUM_SYNCHRONOUS_REPLICAS: 1
+      REPMGR_PRIMARY_HOST: postgres-primary
+      REPMGR_PARTNER_NODES: postgres-primary,postgres-replica
+      REPMGR_NODE_NAME: postgres-primary
+      REPMGR_NODE_NETWORK_NAME: postgres-primary
 
   postgres-replica:
-    image: onlinejudge95/rinnegan-postgres
+    image: bitnami/postgresql-repmgr:11-debian-10
     networks:
       - database
+    ports:
+      - 5432
     secrets:
-      - database-password
-      - database-user
+      - postgresql-postgres-password
+      - postgresql-password
+      - replication-manager-password
     volumes:
       - data:/var/lib/postgresql/data
     deploy:
@@ -56,8 +74,44 @@ services:
           - node.role == worker
           - node.labels.type == replica
     environment:
-      POSTGRES_PASSWORD_FILE: /run/secrets/database-password
-      POSTGRES_USER_FILE: /run/secrets/database-user
+      POSTGRESQL_USERNAME: rinnegan-postgres
+      POSTGRESQL_DATABASE: rinnegan
+      POSTGRESQL_POSTGRES_PASSWORD_FILE: /run/secrets/postgresql-postgres-password
+      POSTGRESQL_PASSWORD_FILE: /run/secrets/postgresql-password
+      REPMGR_PASSWORD_FILE: /run/secrets/replication-manager-password
+      POSTGRESQL_NUM_SYNCHRONOUS_REPLICAS: 1
+      REPMGR_PRIMARY_HOST: postgres-primary
+      REPMGR_PARTNER_NODES: postgres-primary,postgres-replica
+      REPMGR_NODE_NAME: postgres-replica
+      REPMGR_NODE_NETWORK_NAME: postgres-replica
+
+  pgpool:
+    image: bitnami/pgpool:4-debian-10
+    networks:
+      - database
+      - backend
+    ports:
+      - 5432:5432
+    secrets:
+      - pg-pool-sr-check-password
+    deploy:
+      placement:
+        constraints:
+          - node.role == worker
+          - node.labels.type == proxy
+    environment:
+      PGPOOL_POSTGRES_PASSWORD: adminpassword
+      PGPOOL_ADMIN_PASSWORD: adminpassword
+      PGPOOL_SR_CHECK_USER: rinnegan-pgpool
+      PGPOOL_POSTGRES_USERNAME: rinnegan-pgpool-postgres
+      PGPOOL_ADMIN_USERNAME: rinnegan-pgpool-admin
+      PGPOOL_SR_CHECK_PASSWORD_FILE: /run/secrets/pg-pool-sr-check-password
+      PGPOOL_BACKEND_NODES: 0:postgres-primary:5432,1:postgres-replica:5432
+    healthcheck:
+      test: ["CMD", "/healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   visualizer:
     image: dockersamples/visualizer

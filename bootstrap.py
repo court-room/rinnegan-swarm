@@ -50,7 +50,7 @@ class DockerClient:
         ]
 
         for requested_secret in requested_secrets:
-            env_file = f".env.{requested_secret}"
+            env_file = f".secrets.{requested_secret}"
             secrets = dict()
 
             with open(env_file, "r") as fp:
