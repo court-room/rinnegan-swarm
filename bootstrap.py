@@ -48,7 +48,7 @@ class DockerClient:
 
         for requested_secret in requested_secrets:
             env_file = f".secrets.{requested_secret}"
-            secrets = dict()
+            secrets = {}
 
             with open(env_file, "r") as fp:
                 for line in fp.readlines():
