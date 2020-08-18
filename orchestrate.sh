@@ -1,14 +1,12 @@
 #!/bin/bash
 
-source env/bin/activate
-
 python bootstrap.py
-
-deactivate
 
 echo
 echo
 
 docker stack deploy --compose-file stack.yml --orchestrator swarm rinnegan
+
+sleep 2
 
 watch docker stack ps rinnegan
