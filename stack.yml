@@ -9,6 +9,9 @@ networks:
   database:
     external: true
     name: "rinnegan-database-network"
+  backend:
+    external: true
+    name: "rinnegan-backend-network"
 
 secrets:
   database-password:
@@ -18,7 +21,7 @@ secrets:
 
 services:
   postgres:
-    image: bitnami/postgresql-repmgr:11-debian-10
+    image: onlinejudge95/rinnegan-postgres
     networks:
       - database
     ports:
@@ -29,7 +32,7 @@ services:
     volumes:
       - data:/var/lib/postgresql/data
     deploy:
-      replicas: 2
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
