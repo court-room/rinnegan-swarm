@@ -9,4 +9,6 @@ deactivate
 echo
 echo
 
-docker stack deploy --compose-file stack.yml rinnegan
+docker stack deploy --compose-file stack.yml --orchestrator swarm rinnegan
+
+watch docker stack ps rinnegan

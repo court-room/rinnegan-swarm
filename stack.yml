@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.8"
 
 volumes:
   data:
@@ -9,12 +9,6 @@ networks:
   database:
     external: true
     name: "rinnegan-database-network"
-  backend:
-    external: true
-    name: "rinnegan-backend-network"
-  frontend:
-    external: true
-    name: "rinnegan-frontend-network"
 
 secrets:
   database-password:
@@ -23,36 +17,23 @@ secrets:
     external: true
 
 services:
-  postgres-master:
-    image: onlinejudge95/rinnegan-postgres
+  postgres:
+    image: bitnami/postgresql-repmgr:11-debian-10
     networks:
       - database
+    ports:
+      - 5432
     secrets:
       - database-password
       - database-user
     volumes:
       - data:/var/lib/postgresql/data
     deploy:
+      replicas: 2
       placement:
+        max_replicas_per_node: 1
         constraints:
-          - node.labels.type == master
-    environment:
-      POSTGRES_PASSWORD_FILE: /run/secrets/database-password
-      POSTGRES_USER_FILE: /run/secrets/database-user
-
-  postgres-slave:
-    image: onlinejudge95/rinnegan-postgres
-    networks:
-      - database
-    secrets:
-      - database-password
-      - database-user
-    volumes:
-      - data:/var/lib/postgresql/data
-    deploy:
-      placement:
-        constraints:
-          - node.labels.type == slave
+          - node.role == worker
     environment:
       POSTGRES_PASSWORD_FILE: /run/secrets/database-password
       POSTGRES_USER_FILE: /run/secrets/database-user

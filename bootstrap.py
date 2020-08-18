@@ -14,7 +14,10 @@ class DockerClient:
         for requested_network in requested_networks:
             if requested_network not in current_networks:
                 self.client.networks.create(
-                    name=requested_network, driver="overlay", attachable=True,
+                    name=requested_network,
+                    driver="overlay",
+                    attachable=True,
+                    scope="swarm",
                 )
                 print(f"* Successfully created {requested_network}")
                 continue
@@ -44,7 +47,7 @@ class DockerClient:
         ]
 
         for requested_secret in requested_secrets:
-            env_file = f".env.{requested_secret}"
+            env_file = f".secrets.{requested_secret}"
             secrets = dict()
 
             with open(env_file, "r") as fp:
