@@ -45,6 +45,37 @@ services:
       POSTGRES_PASSWORD_FILE: /run/secrets/database-password
       POSTGRES_USER_FILE: /run/secrets/database-user
 
+  flask:
+    image: onlinejudge95/rinnegan-flask
+    depends_on:
+      - postgres
+    networks:
+      - backend
+      - database
+    ports:
+      - 5000:5000
+    secrets: []
+    deploy:
+      replicas: 2
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - node.role == worker
+          - node.labels.type != datastore
+      resources:
+        limits:
+          memory: 200M
+    environment:
+      FLASK_APP: manage:app
+      FLASK_ENV: development
+      PORT: 5000
+      SECRET_KEY: NOT_SO_SECRET_KEY
+      DATABASE_URL: xxxx
+      DATABASE_TEST_URL: xxxx
+      STAGE: local
+      PYTHONDONTWRITEBYTECODE: 1
+      PYTHONUNBUFFERED: 1
+
   visualizer:
     image: dockersamples/visualizer
     stop_grace_period: 20s
