@@ -21,7 +21,7 @@ secrets:
 
 services:
   postgres:
-    image: onlinejudge95/rinnegan-postgres
+    image: onlinejudge95/rinnegan-postgres:1
     networks:
       - database
     ports:
@@ -37,6 +37,7 @@ services:
         max_replicas_per_node: 1
         constraints:
           - node.role == worker
+          - node.labels.type == datastore
     environment:
       POSTGRES_PASSWORD_FILE: /run/secrets/database-password
       POSTGRES_USER_FILE: /run/secrets/database-user

@@ -68,10 +68,7 @@ class DockerClient:
 if __name__ == "__main__":
     obj = DockerClient()
     obj.manage_networks(
-        [
-            "rinnegan-database-network",
-            "rinnegan-backend-network"
-        ]
+        ["rinnegan-database-network", "rinnegan-backend-network"]
     )
     obj.manage_volumes(["rinnegan-database-volume"])
     obj.manage_secrets(["database"])
