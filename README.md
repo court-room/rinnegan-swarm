@@ -1,5 +1,7 @@
 # rinnegan-platform-setup
 
+[![lint Actions Status](https://github.com/court-room/rinnegan-platform-setup/workflows/lint/badge.svg)](https://github.com/court-room/rinnegan-platform-setup/actions)
+
 ## Architecture
 
 ![architecture](https://rinnegan-assets.s3.ap-south-1.amazonaws.com/Architecture.png)
