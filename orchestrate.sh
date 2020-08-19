@@ -5,7 +5,7 @@ python bootstrap.py
 echo
 echo
 
-docker stack deploy --compose-file stack.yml --orchestrator swarm rinnegan
+docker stack deploy --compose-file stack-prod.yml --orchestrator swarm rinnegan
 
 sleep 2
 

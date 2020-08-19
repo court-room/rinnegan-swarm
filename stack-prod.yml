@@ -18,6 +18,12 @@ secrets:
     external: true
   database-user:
     external: true
+  backend-secret-key:
+    external: true
+  backend-database-string:
+    external: true
+  backend-test-database-string:
+    external: true
 
 services:
   postgres:
@@ -54,7 +60,10 @@ services:
       - database
     ports:
       - 5000:5000
-    secrets: []
+    secrets:
+      - backend-secret-key
+      - backend-database-string
+      - backend-test-database-string
     deploy:
       replicas: 2
       placement:
@@ -69,9 +78,9 @@ services:
       FLASK_APP: manage:app
       FLASK_ENV: development
       PORT: 5000
-      SECRET_KEY: NOT_SO_SECRET_KEY
-      DATABASE_URL: postgresql://rinnegan:QN23BpEhe9SkBbkGSDAZ@postgres:5432/rinnegan
-      DATABASE_TEST_URL: DUMMY_TEST_URL
+      SECRET_KEY_FILE: /run/secrets/backend-secret-key
+      DATABASE_URL_FILE: /run/secrets/backend-database-string
+      DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
       STAGE: local
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
