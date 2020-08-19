@@ -81,7 +81,7 @@ services:
       SECRET_KEY_FILE: /run/secrets/backend-secret-key
       DATABASE_URL_FILE: /run/secrets/backend-database-string
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
-      STAGE: local
+      STAGE: prod
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
 
