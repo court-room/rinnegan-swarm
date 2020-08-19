@@ -52,7 +52,7 @@ services:
       POSTGRES_USER_FILE: /run/secrets/database-user
 
   flask:
-    image: onlinejudge95/rinnegan-flask:staging
+    image: onlinejudge95/rinnegan-flask
     depends_on:
       - postgres
     networks:
