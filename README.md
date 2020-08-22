@@ -1,8 +1,7 @@
 # rinnegan-platform-setup
 
 [![lint Actions Status](https://github.com/court-room/rinnegan-platform-setup/workflows/lint/badge.svg)](https://github.com/court-room/rinnegan-platform-setup/actions)
-
-[![DeepSource](https://static.deepsource.io/deepsource-badge-dark-mini.svg)](https://deepsource.io/gh/court-room/rinnegan-platform-setup/?ref=repository-badge)
+[![DeepSource](https://static.deepsource.io/deepsource-badge-light-mini.svg)](https://deepsource.io/gh/court-room/rinnegan-platform-setup/?ref=repository-badge)
 
 ## Architecture
 
