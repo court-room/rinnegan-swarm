@@ -18,6 +18,9 @@ networks:
   queue:
     external: true
     name: "rinnegan-queue-network"
+  streaming:
+    external: true
+    name: "rinnegan-queue-network"
 
 secrets:
   database-password:
@@ -106,6 +109,25 @@ services:
         constraints:
           - node.role == worker
           - node.labels.type != datastore
+      resources:
+        limits:
+          memory: 200M
+
+  worker:
+    image: onlinejudge95/rinnegan-worker
+    depends_on:
+      - queue
+    networks:
+      - queue
+      - streaming
+    deploy:
+      replicas: 2
+      placement:
+        max_replicas_per_node: 2
+        constraints:
+          - node.role == worker
+          - node.labels.type != datastore
+          - node.labels.type != queue
       resources:
         limits:
           memory: 200M
