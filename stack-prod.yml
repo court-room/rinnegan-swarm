@@ -82,9 +82,8 @@ services:
       - backend-database-string
       - backend-test-database-string
     deploy:
-      replicas: 2
+      replicas: 1
       placement:
-        max_replicas_per_node: 1
         constraints:
           - node.role == worker
           - node.labels.type != datastore
