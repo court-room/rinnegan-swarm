@@ -58,7 +58,7 @@ services:
       placement:
         constraints:
           - node.role == worker
-          - node.labels.type = datastore
+          - node.labels.type == datastore
       resources:
         limits:
           memory: 200M
