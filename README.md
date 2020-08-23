@@ -5,7 +5,13 @@
 
 ## Architecture
 
-![architecture](https://rinnegan-assets.s3.ap-south-1.amazonaws.com/Architecture.png)
+### Service level Architecture
+
+![service architecture](https://rinnegan-assets.s3.ap-south-1.amazonaws.com/architecture-asstes/Service-Level-Architecture.png)
+
+### Network level Architecture
+
+![network architeture](https://rinnegan-assets.s3.ap-south-1.amazonaws.com/architecture-asstes/Network-Level-Architecture.png)
 
 Currently we have a 4 node cluster in the following pattern
 
