@@ -72,6 +72,7 @@ if __name__ == "__main__":
             "rinnegan-database-network",
             "rinnegan-backend-network",
             "rinnegan-queue-network",
+            "rinnegan-streaming-network",
         ]
     )
     obj.manage_volumes(["rinnegan-database-volume", "rinnegan-queue-volume"])
