@@ -4,6 +4,9 @@ volumes:
   data:
     external: true
     name: "rinnegan-database-volume"
+  queue:
+    external: true
+    name: "rinnegan-queue-volume"
 
 networks:
   database:
@@ -12,6 +15,9 @@ networks:
   backend:
     external: true
     name: "rinnegan-backend-network"
+  queue:
+    external: true
+    name: "rinnegan-queue-network"
 
 secrets:
   database-password:
@@ -58,6 +64,7 @@ services:
     networks:
       - backend
       - database
+      - queue
     ports:
       - 5000:5000
     secrets:
@@ -83,6 +90,25 @@ services:
       STAGE: prod
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
+
+  redis:
+    image: onlinejudge95/rinnegan-redis
+    networks:
+      - queue
+    ports:
+      - 6379
+    volumes:
+      - queue:/data
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - node.role == worker
+          - node.labels.type != datastore
+      resources:
+        limits:
+          memory: 200M
 
   visualizer:
     image: dockersamples/visualizer
