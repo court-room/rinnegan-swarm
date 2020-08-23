@@ -20,7 +20,7 @@ networks:
     name: "rinnegan-queue-network"
   streaming:
     external: true
-    name: "rinnegan-streaming-network"
+    name: "rinnegan-queue-network"
 
 secrets:
   database-password:
@@ -80,7 +80,7 @@ services:
         max_replicas_per_node: 1
         constraints:
           - node.role == worker
-          - node.labels.type == queue
+          - node.labels.type != datastore
       resources:
         limits:
           memory: 200M
