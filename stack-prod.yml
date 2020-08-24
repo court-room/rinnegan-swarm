@@ -115,7 +115,7 @@ services:
         max_replicas_per_node: 1
         constraints:
           - node.role == worker
-          - node.labels.type != datastore
+          - node.labels.type == queue
       resources:
         limits:
           memory: 200M
