@@ -96,6 +96,7 @@ services:
       # Meanwhile we are debugging
       FLASK_ENV: development
       SECRET_KEY_FILE: /run/secrets/backend-secret-key
+      REDIS_URL_FILE: /run/secrets/backend-redis-string
       DATABASE_URL_FILE: /run/secrets/backend-database-string
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
       STAGE: prod
