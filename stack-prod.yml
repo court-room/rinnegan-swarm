@@ -43,7 +43,7 @@ secrets:
 
 services:
   postgres:
-    image: onlinejudge95/rinnegan-postgres:1
+    image: onlinejudge95/rinnegan-postgres:1-alpine
     networks:
       - database
     ports:
