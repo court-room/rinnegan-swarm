@@ -127,8 +127,15 @@ services:
     depends_on:
       - queue
     networks:
+      - backend
       - queue
       # - streaming
+    ports:
+      - 5000:5000
+    secrets:
+      - backend-secret-key
+      - backend-database-string
+      - backend-test-database-string
     deploy:
       replicas: 2
       placement:
@@ -140,6 +147,17 @@ services:
       resources:
         limits:
           memory: 200M
+    environment:
+      FLASK_APP: manage:app
+      # Meanwhile we are debugging
+      FLASK_ENV: development
+      SECRET_KEY_FILE: /run/secrets/backend-secret-key
+      REDIS_URL_FILE: /run/secrets/backend-redis-string
+      DATABASE_URL_FILE: /run/secrets/backend-database-string
+      DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
+      STAGE: prod
+      PYTHONDONTWRITEBYTECODE: 1
+      PYTHONUNBUFFERED: 1
 
   # mongo:
   #   image: onlinejudge95/rinnegan-mongo
