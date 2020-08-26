@@ -67,7 +67,7 @@ services:
       POSTGRES_USER_FILE: /run/secrets/database-user
 
   flask:
-    image: onlinejudge95/rinnegan-flask:pr-18-merge
+    image: onlinejudge95/rinnegan-flask:staging
     depends_on:
       - postgres
     networks:
@@ -122,24 +122,24 @@ services:
         limits:
           memory: 200M
 
-  # worker:
-  #   image: onlinejudge95/rinnegan-worker
-  #   depends_on:
-  #     - queue
-  #   networks:
-  #     - queue
-  #     - streaming
-  #   deploy:
-  #     replicas: 2
-  #     placement:
-  #       max_replicas_per_node: 2
-  #       constraints:
-  #         - node.role == worker
-  #         - node.labels.type != datastore
-  #         - node.labels.type != queue
-  #     resources:
-  #       limits:
-  #         memory: 200M
+  worker:
+    image: onlinejudge95/rinnegan-flask:staging
+    depends_on:
+      - queue
+    networks:
+      - queue
+      # - streaming
+    deploy:
+      replicas: 2
+      placement:
+        max_replicas_per_node: 2
+        constraints:
+          - node.role == worker
+          - node.labels.type != datastore
+          - node.labels.type != queue
+      resources:
+        limits:
+          memory: 200M
 
   # mongo:
   #   image: onlinejudge95/rinnegan-mongo
