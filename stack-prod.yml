@@ -36,6 +36,8 @@ secrets:
     external: true
   backend-test-database-string:
     external: true
+  backend-redis-string:
+    external: true
   # streaming-database-password:
   #   external: true
   # streaming-database-user:
@@ -125,17 +127,18 @@ services:
   worker:
     image: onlinejudge95/rinnegan-flask:staging
     depends_on:
-      - queue
+      - postgres
     networks:
       - backend
       - queue
       # - streaming
     ports:
-      - 5000:5000
+      - 5001:5000
     secrets:
       - backend-secret-key
       - backend-database-string
       - backend-test-database-string
+      - backend-redis-string
     deploy:
       replicas: 2
       placement:
