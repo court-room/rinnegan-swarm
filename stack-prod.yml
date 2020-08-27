@@ -48,8 +48,6 @@ services:
     image: onlinejudge95/rinnegan-postgres:1-alpine
     networks:
       - database
-    ports:
-      - 5432
     secrets:
       - database-password
       - database-user
@@ -95,6 +93,7 @@ services:
           memory: 200M
     environment:
       FLASK_APP: manage:app
+      NODE_TYPE: server
       # Meanwhile we are debugging
       FLASK_ENV: development
       SECRET_KEY_FILE: /run/secrets/backend-secret-key
@@ -127,11 +126,10 @@ services:
   worker:
     image: onlinejudge95/rinnegan-flask:staging
     depends_on:
-      - postgres
+      - redis
     networks:
       - backend
       - queue
-      # - streaming
     ports:
       - 5001:5000
     secrets:
@@ -140,7 +138,7 @@ services:
       - backend-test-database-string
       - backend-redis-string
     deploy:
-      replicas: 2
+      replicas: 1
       placement:
         max_replicas_per_node: 2
         constraints:
@@ -149,11 +147,12 @@ services:
           - node.labels.type != queue
       resources:
         limits:
-          memory: 200M
+          memory: 100M
     environment:
       FLASK_APP: manage:app
       # Meanwhile we are debugging
       FLASK_ENV: development
+      NODE_TYPE: worker
       SECRET_KEY_FILE: /run/secrets/backend-secret-key
       REDIS_URL_FILE: /run/secrets/backend-redis-string
       DATABASE_URL_FILE: /run/secrets/backend-database-string
