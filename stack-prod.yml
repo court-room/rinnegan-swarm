@@ -79,6 +79,7 @@ services:
       - 5000:5000
     secrets:
       - backend-secret-key
+      - backend-redis-string
       - backend-database-string
       - backend-test-database-string
     deploy:
@@ -105,7 +106,7 @@ services:
       PYTHONUNBUFFERED: 1
 
   redis:
-    image: onlinejudge95/rinnegan-redis
+    image: onlinejudge95/rinnegan-redis:1-alpine
     networks:
       - queue
     ports:
@@ -128,6 +129,7 @@ services:
     depends_on:
       - redis
     networks:
+      - database
       - backend
       - queue
     ports:
@@ -142,17 +144,16 @@ services:
       placement:
         max_replicas_per_node: 2
         constraints:
-          - node.role == worker
-          - node.labels.type != datastore
-          - node.labels.type != queue
+          - node.role == manager
+          - node.labels.type == service-workers
       resources:
         limits:
           memory: 100M
     environment:
       FLASK_APP: manage:app
+      NODE_TYPE: worker
       # Meanwhile we are debugging
       FLASK_ENV: development
-      NODE_TYPE: worker
       SECRET_KEY_FILE: /run/secrets/backend-secret-key
       REDIS_URL_FILE: /run/secrets/backend-redis-string
       DATABASE_URL_FILE: /run/secrets/backend-database-string
