@@ -139,10 +139,6 @@ services:
       - 6379:6379
     env_file:
       - .secrets.queue
-    secrets:
-      - queue-password
-    volumes:
-      - queue:/data
     deploy:
       replicas: 1
       placement:
