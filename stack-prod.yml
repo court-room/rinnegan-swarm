@@ -4,9 +4,9 @@ volumes:
   data:
     external: true
     name: "rinnegan-database-volume"
-  queue:
-    external: true
-    name: "rinnegan-queue-volume"
+  # queue:
+  #   external: true
+  #   name: "rinnegan-queue-volume"
   # streaming-data:
   #   external: true
   #   name: rinnegan-streaming-data
@@ -130,13 +130,13 @@ services:
       PYTHONUNBUFFERED: 1
 
   redis:
-    image: onlinejudge95/rinnegan-redis:1-alpine
+    image: onlinejudge95/rinnegan-redis:latest
     networks:
       - queue
     ports:
-      - 6379
-    volumes:
-      - queue:/data
+      - 6379:6379
+    # volumes:
+    #   - queue:/data
     deploy:
       replicas: 1
       placement:
@@ -174,11 +174,11 @@ services:
       placement:
         max_replicas_per_node: 2
         constraints:
-          - node.role == manager
+          - node.role == worker
           - node.labels.type == service-workers
-      resources:
-        limits:
-          memory: 100M
+      # resources:
+      #   limits:
+      #     memory: 100M
     environment:
       FLASK_APP: manage:app
       NODE_TYPE: worker
