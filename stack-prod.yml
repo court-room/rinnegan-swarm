@@ -172,7 +172,7 @@ services:
       - backend-aws-secret-access-key
       - backend-s3-bucket
     deploy:
-      replicas: 1
+      replicas: 2
       placement:
         max_replicas_per_node: 2
         constraints:
