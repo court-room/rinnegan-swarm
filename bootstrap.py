@@ -72,7 +72,14 @@ if __name__ == "__main__":
             "rinnegan-database-network",
             "rinnegan-backend-network",
             "rinnegan-queue-network",
+            "rinnegan-registry-network",
         ]
     )
-    obj.manage_volumes(["rinnegan-database-volume", "rinnegan-queue-volume"])
+    obj.manage_volumes(
+        [
+            "rinnegan-database-volume",
+            "rinnegan-queue-volume",
+            "rinnegan-registry-volume",
+        ]
+    )
     obj.manage_secrets(["database", "backend"])
