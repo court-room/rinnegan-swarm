@@ -1,6 +1,9 @@
 #!/bin/bash
 
 ENV=$1
+
+clear
+
 python bootstrap.py
 
 echo

@@ -53,7 +53,7 @@ secrets:
 
 services:
   registry:
-    image: rinnegan-registry:latest
+    image: onlinejudge95/rinnegan-registry:latest
     networks:
       - registry
     ports:
@@ -81,13 +81,14 @@ services:
     image: localhost:6000/rinnegan-flask:latest
     depends_on:
       - postgres
+      - registry
     networks:
       - backend
       - database
       - queue
       - registry
     ports:
-      - 8000:5000
+      - 5000:5000
     secrets:
       - backend-secret-key
       - backend-redis-string
@@ -130,43 +131,45 @@ services:
     volumes:
       - queue:/data
 
-  # worker:
-  #   image: rinnegan-flask:latest
-  #   depends_on:
-  #     - redis
-  #   networks:
-  #     - database
-  #     - backend
-  #     - queue
-  #   ports:
-  #     - 5001:5000
-  #   secrets:
-  #     - backend-secret-key
-  #     - backend-redis-string
-  #     - backend-database-string
-  #     - backend-test-database-string
-  #     - backend-twitter-consumer-key
-  #     - backend-twitter-consumer-secret
-  #     - backend-cloud-vendor
-  #     - backend-aws-access-key-id
-  #     - backend-aws-secret-access-key
-  #     - backend-s3-bucket
-  #   environment:
-  #     FLASK_APP: manage:app
-  #     NODE_TYPE: worker
-  #     FLASK_ENV: development
-  #     SECRET_KEY_FILE: /run/secrets/backend-secret-key
-  #     REDIS_URL_FILE: /run/secrets/backend-redis-string
-  #     DATABASE_URL_FILE: /run/secrets/backend-database-string
-  #     TWITTER_CONSUMER_KEY_FILE: /run/secrets/backend-twitter-consumer-key
-  #     TWITTER_CONSUMER_SECRET_FILE: /run/secrets/backend-twitter-consumer-secret
-  #     CLOUD_VENDOR_FILE: /run/secrets/backend-cloud-vendor
-  #     AWS_ACCESS_KEY_ID_FILE: /run/secrets/backend-aws-access-key-id
-  #     AWS_SECRET_ACCESS_KEY_FILE: /run/secrets/backend-aws-secret-access-key
-  #     S3_BUCKET_FILE: /run/secrets/backend-s3-bucket
-  #     DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
-  #     PYTHONDONTWRITEBYTECODE: 1
-  #     PYTHONUNBUFFERED: 1
+  worker:
+    image: localhost:6000/rinnegan-flask:latest
+    depends_on:
+      - redis
+      - registry
+    networks:
+      - database
+      - backend
+      - queue
+      - registry
+    ports:
+      - 8001:5000
+    secrets:
+      - backend-secret-key
+      - backend-redis-string
+      - backend-database-string
+      - backend-test-database-string
+      - backend-twitter-consumer-key
+      - backend-twitter-consumer-secret
+      - backend-cloud-vendor
+      - backend-aws-access-key-id
+      - backend-aws-secret-access-key
+      - backend-s3-bucket
+    environment:
+      FLASK_APP: manage:app
+      NODE_TYPE: worker
+      FLASK_ENV: development
+      SECRET_KEY_FILE: /run/secrets/backend-secret-key
+      REDIS_URL_FILE: /run/secrets/backend-redis-string
+      DATABASE_URL_FILE: /run/secrets/backend-database-string
+      TWITTER_CONSUMER_KEY_FILE: /run/secrets/backend-twitter-consumer-key
+      TWITTER_CONSUMER_SECRET_FILE: /run/secrets/backend-twitter-consumer-secret
+      CLOUD_VENDOR_FILE: /run/secrets/backend-cloud-vendor
+      AWS_ACCESS_KEY_ID_FILE: /run/secrets/backend-aws-access-key-id
+      AWS_SECRET_ACCESS_KEY_FILE: /run/secrets/backend-aws-secret-access-key
+      S3_BUCKET_FILE: /run/secrets/backend-s3-bucket
+      DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
+      PYTHONDONTWRITEBYTECODE: 1
+      PYTHONUNBUFFERED: 1
 
   visualizer:
     image: dockersamples/visualizer
