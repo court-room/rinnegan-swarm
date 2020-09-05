@@ -13,3 +13,5 @@ else
     echo "Running in prod env"
     docker stack deploy --compose-file stack-prod.yml --orchestrator swarm rinnegan
 fi
+
+watch docker stack ps rinnegan
