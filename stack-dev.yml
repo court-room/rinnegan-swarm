@@ -4,9 +4,9 @@ volumes:
   database:
     external: true
     name: "rinnegan-database-volume"
-  # queue:
-  #   external: true
-  #   name: "rinnegan-queue-volume"
+  queue:
+    external: true
+    name: "rinnegan-queue-volume"
   registry:
     external: true
     name: "rinnegan-registry-volume"
@@ -18,9 +18,9 @@ networks:
   # backend:
   #   external: true
   #   name: "rinnegan-backend-network"
-  # queue:
-  #   external: true
-  #   name: "rinnegan-queue-network"
+  queue:
+    external: true
+    name: "rinnegan-queue-network"
   registry:
     external: true
     name: "rinnegan-registry-network"
@@ -115,16 +115,19 @@ services:
   #     PYTHONDONTWRITEBYTECODE: 1
   #     PYTHONUNBUFFERED: 1
 
-  # redis:
-  #   image: rinnegan-redis:latest
-  #   networks:
-  #     - queue
-  #   ports:
-  #     - 6379:6379
-  #   env_file:
-  #     - .secrets.queue
-  #   volumes:
-  #     - queue:/data
+  redis:
+    image: localhost:6000/rinnegan-redis:latest
+    depends_on:
+      - registry
+    networks:
+      - queue
+      - registry
+    ports:
+      - 6379:6379
+    env_file:
+      - .secrets.queue
+    volumes:
+      - queue:/data
 
   # worker:
   #   image: rinnegan-flask:latest
