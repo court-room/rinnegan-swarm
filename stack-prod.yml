@@ -59,7 +59,7 @@ secrets:
 
 services:
   postgres:
-    image: onlinejudge95/rinnegan-postgres:pr-11-merge
+    image: onlinejudge95/rinnegan-postgres:1-alpine
     networks:
       - database
     secrets:
@@ -80,124 +80,125 @@ services:
       POSTGRES_PASSWORD_FILE: /run/secrets/database-password
       POSTGRES_USER_FILE: /run/secrets/database-user
 
-  flask:
-    image: onlinejudge95/rinnegan-flask:pr-36-merge
-    depends_on:
-      - postgres
-    networks:
-      - backend
-      - database
-      - queue
-      # - streaming
-    ports:
-      - 5000:5000
-    secrets:
-      - backend-secret-key
-      - backend-redis-string
-      - backend-database-string
-      - backend-test-database-string
-      - backend-twitter-consumer-key
-      - backend-twitter-consumer-secret
-      - backend-cloud-vendor
-      - backend-aws-access-key-id
-      - backend-aws-secret-access-key
-      - backend-s3-bucket
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == worker
-          - node.labels.type != datastore
-          - node.labels.type != queue
-      resources:
-        limits:
-          memory: 200M
-    environment:
-      FLASK_APP: manage:app
-      NODE_TYPE: server
-      FLASK_ENV: development
-      SECRET_KEY_FILE: /run/secrets/backend-secret-key
-      REDIS_URL_FILE: /run/secrets/backend-redis-string
-      DATABASE_URL_FILE: /run/secrets/backend-database-string
-      TWITTER_CONSUMER_KEY_FILE: /run/secrets/backend-twitter-consumer-key
-      TWITTER_CONSUMER_SECRET_FILE: /run/secrets/backend-twitter-consumer-secret
-      CLOUD_VENDOR_FILE: /run/secrets/backend-cloud-vendor
-      AWS_ACCESS_KEY_ID_FILE: /run/secrets/backend-aws-access-key-id
-      AWS_SECRET_ACCESS_KEY_FILE: /run/secrets/backend-aws-secret-access-key
-      S3_BUCKET_FILE: /run/secrets/backend-s3-bucket
-      DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
-      PYTHONDONTWRITEBYTECODE: 1
-      PYTHONUNBUFFERED: 1
+  # flask:
+  #   image: onlinejudge95/rinnegan-flask:pr-36-merge
+  #   depends_on:
+  #     - postgres
+  #     - redis
+  #   networks:
+  #     - backend
+  #     - database
+  #     - queue
+  #     # - streaming
+  #   ports:
+  #     - 5000:5000
+  #   secrets:
+  #     - backend-secret-key
+  #     - backend-redis-string
+  #     - backend-database-string
+  #     - backend-test-database-string
+  #     - backend-twitter-consumer-key
+  #     - backend-twitter-consumer-secret
+  #     - backend-cloud-vendor
+  #     - backend-aws-access-key-id
+  #     - backend-aws-secret-access-key
+  #     - backend-s3-bucket
+  #   deploy:
+  #     replicas: 1
+  #     placement:
+  #       constraints:
+  #         - node.role == worker
+  #         - node.labels.type != datastore
+  #         - node.labels.type != queue
+  #     resources:
+  #       limits:
+  #         memory: 200M
+  #   environment:
+  #     FLASK_APP: manage:app
+  #     NODE_TYPE: server
+  #     FLASK_ENV: development
+  #     SECRET_KEY_FILE: /run/secrets/backend-secret-key
+  #     REDIS_URL_FILE: /run/secrets/backend-redis-string
+  #     DATABASE_URL_FILE: /run/secrets/backend-database-string
+  #     TWITTER_CONSUMER_KEY_FILE: /run/secrets/backend-twitter-consumer-key
+  #     TWITTER_CONSUMER_SECRET_FILE: /run/secrets/backend-twitter-consumer-secret
+  #     CLOUD_VENDOR_FILE: /run/secrets/backend-cloud-vendor
+  #     AWS_ACCESS_KEY_ID_FILE: /run/secrets/backend-aws-access-key-id
+  #     AWS_SECRET_ACCESS_KEY_FILE: /run/secrets/backend-aws-secret-access-key
+  #     S3_BUCKET_FILE: /run/secrets/backend-s3-bucket
+  #     DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
+  #     PYTHONDONTWRITEBYTECODE: 1
+  #     PYTHONUNBUFFERED: 1
 
-  redis:
-    image: onlinejudge95/rinnegan-redis:pr-9-merge
-    networks:
-      - queue
-    ports:
-      - 6379:6379
-    env_file:
-      - .secrets.queue
-    volumes:
-      - queue:/data
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - node.role == worker
-          - node.labels.type == queue
-      resources:
-        limits:
-          memory: 200M
+  # redis:
+  #   image: onlinejudge95/rinnegan-redis:pr-9-merge
+  #   networks:
+  #     - queue
+  #   ports:
+  #     - 6379:6379
+  #   env_file:
+  #     - .secrets.queue
+  #   volumes:
+  #     - queue:/data
+  #   deploy:
+  #     replicas: 1
+  #     placement:
+  #       max_replicas_per_node: 1
+  #       constraints:
+  #         - node.role == worker
+  #         - node.labels.type == queue
+  #     resources:
+  #       limits:
+  #         memory: 200M
 
-  worker:
-    image: onlinejudge95/rinnegan-flask:pr-36-merge
-    depends_on:
-      - redis
-    networks:
-      - database
-      - backend
-      - queue
-    ports:
-      - 5001:5000
-    secrets:
-      - backend-secret-key
-      - backend-redis-string
-      - backend-database-string
-      - backend-test-database-string
-      - backend-twitter-consumer-key
-      - backend-twitter-consumer-secret
-      - backend-cloud-vendor
-      - backend-aws-access-key-id
-      - backend-aws-secret-access-key
-      - backend-s3-bucket
-    deploy:
-      replicas: 2
-      placement:
-        max_replicas_per_node: 2
-        constraints:
-          - node.role == worker
-          - node.labels.type == service-workers
-      resources:
-        limits:
-          memory: 100M
-    environment:
-      FLASK_APP: manage:app
-      NODE_TYPE: worker
-      FLASK_ENV: development
-      SECRET_KEY_FILE: /run/secrets/backend-secret-key
-      REDIS_URL_FILE: /run/secrets/backend-redis-string
-      DATABASE_URL_FILE: /run/secrets/backend-database-string
-      TWITTER_CONSUMER_KEY_FILE: /run/secrets/backend-twitter-consumer-key
-      TWITTER_CONSUMER_SECRET_FILE: /run/secrets/backend-twitter-consumer-secret
-      CLOUD_VENDOR_FILE: /run/secrets/backend-cloud-vendor
-      AWS_ACCESS_KEY_ID_FILE: /run/secrets/backend-aws-access-key-id
-      AWS_SECRET_ACCESS_KEY_FILE: /run/secrets/backend-aws-secret-access-key
-      S3_BUCKET_FILE: /run/secrets/backend-s3-bucket
-      DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
-      STAGE: prod
-      PYTHONDONTWRITEBYTECODE: 1
-      PYTHONUNBUFFERED: 1
+  # worker:
+  #   image: onlinejudge95/rinnegan-flask:pr-36-merge
+  #   depends_on:
+  #     - redis
+  #   networks:
+  #     - database
+  #     - backend
+  #     - queue
+  #   ports:
+  #     - 5001:5000
+  #   secrets:
+  #     - backend-secret-key
+  #     - backend-redis-string
+  #     - backend-database-string
+  #     - backend-test-database-string
+  #     - backend-twitter-consumer-key
+  #     - backend-twitter-consumer-secret
+  #     - backend-cloud-vendor
+  #     - backend-aws-access-key-id
+  #     - backend-aws-secret-access-key
+  #     - backend-s3-bucket
+  #   deploy:
+  #     replicas: 2
+  #     placement:
+  #       max_replicas_per_node: 2
+  #       constraints:
+  #         - node.role == worker
+  #         - node.labels.type == service-workers
+  #     resources:
+  #       limits:
+  #         memory: 100M
+  #   environment:
+  #     FLASK_APP: manage:app
+  #     NODE_TYPE: worker
+  #     FLASK_ENV: development
+  #     SECRET_KEY_FILE: /run/secrets/backend-secret-key
+  #     REDIS_URL_FILE: /run/secrets/backend-redis-string
+  #     DATABASE_URL_FILE: /run/secrets/backend-database-string
+  #     TWITTER_CONSUMER_KEY_FILE: /run/secrets/backend-twitter-consumer-key
+  #     TWITTER_CONSUMER_SECRET_FILE: /run/secrets/backend-twitter-consumer-secret
+  #     CLOUD_VENDOR_FILE: /run/secrets/backend-cloud-vendor
+  #     AWS_ACCESS_KEY_ID_FILE: /run/secrets/backend-aws-access-key-id
+  #     AWS_SECRET_ACCESS_KEY_FILE: /run/secrets/backend-aws-secret-access-key
+  #     S3_BUCKET_FILE: /run/secrets/backend-s3-bucket
+  #     DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
+  #     STAGE: prod
+  #     PYTHONDONTWRITEBYTECODE: 1
+  #     PYTHONUNBUFFERED: 1
 
   # mongo:
   #   image: onlinejudge95/rinnegan-mongo
