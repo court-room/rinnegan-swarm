@@ -1,9 +1,9 @@
 version: "3.8"
 
 volumes:
-  # database:
-  #   external: true
-  #   name: "rinnegan-database-volume"
+  database:
+    external: true
+    name: "rinnegan-database-volume"
   # queue:
   #   external: true
   #   name: "rinnegan-queue-volume"
@@ -12,9 +12,9 @@ volumes:
     name: "rinnegan-registry-volume"
 
 networks:
-  # database:
-  #   external: true
-  #   name: "rinnegan-database-network"
+  database:
+    external: true
+    name: "rinnegan-database-network"
   # backend:
   #   external: true
   #   name: "rinnegan-backend-network"
@@ -25,11 +25,11 @@ networks:
     external: true
     name: "rinnegan-registry-network"
 
-# secrets:
-#   database-password:
-#     external: true
-#   database-user:
-#     external: true
+secrets:
+  database-password:
+    external: true
+  database-user:
+    external: true
 #   backend-secret-key:
 #     external: true
 #   backend-database-string:
@@ -61,21 +61,21 @@ services:
     volumes:
       - registry:/var/lib/registry
 
-  # postgres:
-  #   image: registry:6000/rinnegan-postgres:latest
-  #   depends_on:
-  #     - registry
-  #   networks:
-  #     - database
-  #     - registry
-  #   secrets:
-  #     - database-password
-  #     - database-user
-  #   volumes:
-  #     - database:/var/lib/postgresql/data
-  #   environment:
-  #     POSTGRES_PASSWORD_FILE: /run/secrets/database-password
-  #     POSTGRES_USER_FILE: /run/secrets/database-user
+  postgres:
+    image: localhost:6000/rinnegan-postgres:latest
+    depends_on:
+      - registry
+    networks:
+      - database
+      - registry
+    secrets:
+      - database-password
+      - database-user
+    volumes:
+      - database:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/database-password
+      POSTGRES_USER_FILE: /run/secrets/database-user
 
   # flask:
   #   image: rinnegan-flask:latest
