@@ -81,7 +81,7 @@ services:
       POSTGRES_USER_FILE: /run/secrets/database-user
 
   flask:
-    image: onlinejudge95/rinnegan-flask:pr-36-merge
+    image: onlinejudge95/rinnegan-flask:1-slim-buster
     depends_on:
       - postgres
       - redis
@@ -152,7 +152,7 @@ services:
           memory: 200M
 
   worker:
-    image: onlinejudge95/rinnegan-flask:pr-36-merge
+    image: onlinejudge95/rinnegan-flask:1-slim-buster
     depends_on:
       - redis
     networks:
