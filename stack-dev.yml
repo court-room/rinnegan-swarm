@@ -53,7 +53,7 @@ secrets:
 
 services:
   registry:
-    image: onlinejudge95/rinnegan-registry:latest
+    image: onlinejudge95/rinnegan-registry:1
     networks:
       - registry
     ports:

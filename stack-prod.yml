@@ -81,9 +81,10 @@ services:
       POSTGRES_USER_FILE: /run/secrets/database-user
 
   flask:
-    image: onlinejudge95/rinnegan-flask:staging
+    image: onlinejudge95/rinnegan-flask:1-slim-buster
     depends_on:
       - postgres
+      - redis
     networks:
       - backend
       - database
@@ -115,7 +116,7 @@ services:
     environment:
       FLASK_APP: manage:app
       NODE_TYPE: server
-      FLASK_ENV: production
+      FLASK_ENV: development
       SECRET_KEY_FILE: /run/secrets/backend-secret-key
       REDIS_URL_FILE: /run/secrets/backend-redis-string
       DATABASE_URL_FILE: /run/secrets/backend-database-string
@@ -126,12 +127,11 @@ services:
       AWS_SECRET_ACCESS_KEY_FILE: /run/secrets/backend-aws-secret-access-key
       S3_BUCKET_FILE: /run/secrets/backend-s3-bucket
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
-      STAGE: prod
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
 
   redis:
-    image: onlinejudge95/rinnegan-redis:latest
+    image: onlinejudge95/rinnegan-redis:1-alpine
     networks:
       - queue
     ports:
@@ -152,7 +152,7 @@ services:
           memory: 200M
 
   worker:
-    image: onlinejudge95/rinnegan-flask:staging
+    image: onlinejudge95/rinnegan-flask:1-slim-buster
     depends_on:
       - redis
     networks:
