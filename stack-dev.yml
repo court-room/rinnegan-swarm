@@ -102,6 +102,7 @@ services:
       - backend-aws-access-key-id
       - backend-aws-secret-access-key
       - backend-s3-bucket
+      - backend-monkeylearn-api-token
     environment:
       FLASK_APP: manage:app
       NODE_TYPE: server
@@ -115,6 +116,7 @@ services:
       AWS_ACCESS_KEY_ID_FILE: /run/secrets/backend-aws-access-key-id
       AWS_SECRET_ACCESS_KEY_FILE: /run/secrets/backend-aws-secret-access-key
       S3_BUCKET_FILE: /run/secrets/backend-s3-bucket
+      MONKEYLEARN_API_TOKEN_FILE: /run/secrets/backend-monkeylearn-api-token
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
@@ -156,6 +158,7 @@ services:
       - backend-aws-access-key-id
       - backend-aws-secret-access-key
       - backend-s3-bucket
+      - backend-monkeylearn-api-token
     environment:
       FLASK_APP: manage:app
       NODE_TYPE: worker
