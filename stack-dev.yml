@@ -52,6 +52,8 @@ secrets:
     external: true
   backend-monkeylearn-api-token:
     external: true
+  backend-monkeylearn-model-id:
+    external: true
 
 services:
   registry:
@@ -103,6 +105,7 @@ services:
       - backend-aws-secret-access-key
       - backend-s3-bucket
       - backend-monkeylearn-api-token
+      - backend-monkeylearn-model-id
     environment:
       FLASK_APP: manage:app
       NODE_TYPE: server
@@ -117,6 +120,7 @@ services:
       AWS_SECRET_ACCESS_KEY_FILE: /run/secrets/backend-aws-secret-access-key
       S3_BUCKET_FILE: /run/secrets/backend-s3-bucket
       MONKEYLEARN_API_TOKEN_FILE: /run/secrets/backend-monkeylearn-api-token
+      MONKEYLEARN_MODEL_ID_FILE: /run/secrets/backend-monkeylearn-model-id
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
@@ -159,6 +163,7 @@ services:
       - backend-aws-secret-access-key
       - backend-s3-bucket
       - backend-monkeylearn-api-token
+      - backend-monkeylearn-model-id
     environment:
       FLASK_APP: manage:app
       NODE_TYPE: worker
@@ -173,6 +178,7 @@ services:
       AWS_SECRET_ACCESS_KEY_FILE: /run/secrets/backend-aws-secret-access-key
       S3_BUCKET_FILE: /run/secrets/backend-s3-bucket
       MONKEYLEARN_API_TOKEN_FILE: /run/secrets/backend-monkeylearn-api-token
+      MONKEYLEARN_MODEL_ID_FILE: /run/secrets/backend-monkeylearn-model-id
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
