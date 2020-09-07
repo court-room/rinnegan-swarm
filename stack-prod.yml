@@ -54,6 +54,12 @@ secrets:
     external: true
   # queue-password:
   #   external: true
+  backend-monkeylearn-api-token:
+    external: true
+  backend-monkeylearn-model-id:
+    external: true
+  backend-streaming-database-uri:
+    external: true
   streaming-database-user:
     external: true
   streaming-database-password:
@@ -166,6 +172,9 @@ services:
       - backend-aws-access-key-id
       - backend-aws-secret-access-key
       - backend-s3-bucket
+      - backend-monkeylearn-api-token
+      - backend-monkeylearn-model-id
+      - backend-streaming-database-uri
     deploy:
       replicas: 1
       placement:
@@ -190,6 +199,9 @@ services:
       AWS_ACCESS_KEY_ID_FILE: /run/secrets/backend-aws-access-key-id
       AWS_SECRET_ACCESS_KEY_FILE: /run/secrets/backend-aws-secret-access-key
       S3_BUCKET_FILE: /run/secrets/backend-s3-bucket
+      MONKEYLEARN_API_TOKEN_FILE: /run/secrets/backend-monkeylearn-api-token
+      MONKEYLEARN_MODEL_ID_FILE: /run/secrets/backend-monkeylearn-model-id
+      MONGO_URI_FILE: /run/secrets/backend-streaming-database-uri
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
@@ -218,6 +230,9 @@ services:
       - backend-aws-access-key-id
       - backend-aws-secret-access-key
       - backend-s3-bucket
+      - backend-monkeylearn-api-token
+      - backend-monkeylearn-model-id
+      - backend-streaming-database-uri
     deploy:
       replicas: 2
       placement:
@@ -242,6 +257,9 @@ services:
       AWS_ACCESS_KEY_ID_FILE: /run/secrets/backend-aws-access-key-id
       AWS_SECRET_ACCESS_KEY_FILE: /run/secrets/backend-aws-secret-access-key
       S3_BUCKET_FILE: /run/secrets/backend-s3-bucket
+      MONKEYLEARN_API_TOKEN_FILE: /run/secrets/backend-monkeylearn-api-token
+      MONKEYLEARN_MODEL_ID_FILE: /run/secrets/backend-monkeylearn-model-id
+      MONGO_URI_FILE: /run/secrets/backend-streaming-database-uri
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
       STAGE: prod
       PYTHONDONTWRITEBYTECODE: 1
