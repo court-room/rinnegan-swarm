@@ -64,6 +64,8 @@ secrets:
     external: true
   streaming-database-password:
     external: true
+  backend-streaming-database-uri:
+    external: true
 
 services:
   visualizer:
@@ -163,6 +165,7 @@ services:
       - backend-s3-bucket
       - backend-monkeylearn-api-token
       - backend-monkeylearn-model-id
+      - backend-streaming-database-uri
     environment:
       FLASK_APP: manage:app
       NODE_TYPE: server
@@ -178,6 +181,7 @@ services:
       S3_BUCKET_FILE: /run/secrets/backend-s3-bucket
       MONKEYLEARN_API_TOKEN_FILE: /run/secrets/backend-monkeylearn-api-token
       MONKEYLEARN_MODEL_ID_FILE: /run/secrets/backend-monkeylearn-model-id
+      MONGO_URI_FILE: /run/secrets/backend-streaming-database-uri
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
@@ -207,6 +211,7 @@ services:
       - backend-s3-bucket
       - backend-monkeylearn-api-token
       - backend-monkeylearn-model-id
+      - backend-streaming-database-uri
     environment:
       FLASK_APP: manage:app
       NODE_TYPE: worker
@@ -222,6 +227,7 @@ services:
       S3_BUCKET_FILE: /run/secrets/backend-s3-bucket
       MONKEYLEARN_API_TOKEN_FILE: /run/secrets/backend-monkeylearn-api-token
       MONKEYLEARN_MODEL_ID_FILE: /run/secrets/backend-monkeylearn-model-id
+      MONGO_URI_FILE: /run/secrets/backend-streaming-database-uri
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
