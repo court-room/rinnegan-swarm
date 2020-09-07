@@ -125,7 +125,7 @@ services:
       - streaming-database-password
       - streaming-database-user
     volumes:
-      - streaming-data:/data/db
+      - streaming:/data/db
     deploy:
       replicas: 1
       placement:
