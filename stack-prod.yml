@@ -42,6 +42,8 @@ secrets:
     external: true
   backend-twitter-consumer-secret:
     external: true
+  backend-twitter-post-limit:
+    external: true
   backend-cloud-vendor:
     external: true
   backend-aws-access-key-id:
@@ -159,6 +161,7 @@ services:
       - backend-test-database-string
       - backend-twitter-consumer-key
       - backend-twitter-consumer-secret
+      - backend-twitter-post-limit
       - backend-cloud-vendor
       - backend-aws-access-key-id
       - backend-aws-secret-access-key
@@ -182,6 +185,7 @@ services:
       DATABASE_URL_FILE: /run/secrets/backend-database-string
       TWITTER_CONSUMER_KEY_FILE: /run/secrets/backend-twitter-consumer-key
       TWITTER_CONSUMER_SECRET_FILE: /run/secrets/backend-twitter-consumer-secret
+      TWITTER_POST_LIMITS_FILE: /run/secrets/backend-twitter-post-limit
       CLOUD_VENDOR_FILE: /run/secrets/backend-cloud-vendor
       AWS_ACCESS_KEY_ID_FILE: /run/secrets/backend-aws-access-key-id
       AWS_SECRET_ACCESS_KEY_FILE: /run/secrets/backend-aws-secret-access-key
@@ -209,6 +213,7 @@ services:
       - backend-test-database-string
       - backend-twitter-consumer-key
       - backend-twitter-consumer-secret
+      - backend-twitter-post-limit
       - backend-cloud-vendor
       - backend-aws-access-key-id
       - backend-aws-secret-access-key
@@ -232,6 +237,7 @@ services:
       DATABASE_URL_FILE: /run/secrets/backend-database-string
       TWITTER_CONSUMER_KEY_FILE: /run/secrets/backend-twitter-consumer-key
       TWITTER_CONSUMER_SECRET_FILE: /run/secrets/backend-twitter-consumer-secret
+      TWITTER_POST_LIMITS_FILE: /run/secrets/backend-twitter-post-limit
       CLOUD_VENDOR_FILE: /run/secrets/backend-cloud-vendor
       AWS_ACCESS_KEY_ID_FILE: /run/secrets/backend-aws-access-key-id
       AWS_SECRET_ACCESS_KEY_FILE: /run/secrets/backend-aws-secret-access-key
