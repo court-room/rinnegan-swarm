@@ -7,9 +7,9 @@ volumes:
   queue:
     external: true
     name: "rinnegan-queue-volume"
-  # streaming-data:
-  #   external: true
-  #   name: rinnegan-streaming-data
+  streaming:
+    external: true
+    name: "rinnegan-streaming-volume"
 
 networks:
   database:
@@ -21,9 +21,9 @@ networks:
   queue:
     external: true
     name: "rinnegan-queue-network"
-  # streaming:
-  #   external: true
-  #   name: "rinnegan-queue-network"
+  streaming:
+    external: true
+    name: "rinnegan-streaming-network"
 
 secrets:
   database-password:
@@ -52,12 +52,26 @@ secrets:
     external: true
   # queue-password:
   #   external: true
-  # streaming-database-password:
-  #   external: true
-  # streaming-database-user:
-  #   external: true
+  streaming-database-user:
+    external: true
+  streaming-database-password:
+    external: true
 
 services:
+  visualizer:
+    image: dockersamples/visualizer
+    stop_grace_period: 20s
+    networks:
+      - backend
+    ports:
+      - 80:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+
   postgres:
     image: onlinejudge95/rinnegan-postgres:1-alpine
     networks:
@@ -80,6 +94,52 @@ services:
       POSTGRES_PASSWORD_FILE: /run/secrets/database-password
       POSTGRES_USER_FILE: /run/secrets/database-user
 
+  redis:
+    image: onlinejudge95/rinnegan-redis:1-alpine
+    networks:
+      - queue
+    ports:
+      - 6379:6379
+    env_file:
+      - .secrets.queue
+    volumes:
+      - queue:/data
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - node.role == worker
+          - node.labels.type == queue
+      resources:
+        limits:
+          memory: 200M
+
+  mongo:
+    image: onlinejudge95/rinnegan-mongo
+    networks:
+      - streaming
+    ports:
+      - 27017:27017
+    secrets:
+      - streaming-database-password
+      - streaming-database-user
+    volumes:
+      - streaming:/data/db
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - node.role == worker
+          - node.labels.type == datastore
+      resources:
+        limits:
+          memory: 200M
+    environment:
+      MONGO_INITDB_ROOT_USERNAME_FILE: /run/secrets/streaming-database-user
+      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/streaming-database-password
+
   flask:
     image: onlinejudge95/rinnegan-flask:1-slim-buster
     depends_on:
@@ -89,7 +149,7 @@ services:
       - backend
       - database
       - queue
-      # - streaming
+      - streaming
     ports:
       - 5000:5000
     secrets:
@@ -130,35 +190,16 @@ services:
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
 
-  redis:
-    image: onlinejudge95/rinnegan-redis:1-alpine
-    networks:
-      - queue
-    ports:
-      - 6379:6379
-    env_file:
-      - .secrets.queue
-    volumes:
-      - queue:/data
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - node.role == worker
-          - node.labels.type == queue
-      resources:
-        limits:
-          memory: 200M
-
   worker:
     image: onlinejudge95/rinnegan-flask:1-slim-buster
     depends_on:
       - redis
+      - mongo
     networks:
       - database
       - backend
       - queue
+      - streaming
     ports:
       - 5001:5000
     secrets:
@@ -199,44 +240,3 @@ services:
       STAGE: prod
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
-
-  # mongo:
-  #   image: onlinejudge95/rinnegan-mongo
-  #   depends_on:
-  #     - flask
-  #   networks:
-  #     - streaming
-  #   ports:
-  #     - 27017
-  #   secrets:
-  #     - streaming-database-password
-  #     - streaming-database-user
-  #   volumes:
-  #     - streaming-data:/data/db
-  #   deploy:
-  #     replicas: 1
-  #     placement:
-  #       max_replicas_per_node: 1
-  #       constraints:
-  #         - node.role == worker
-  #         - node.labels.type == datastore
-  #     resources:
-  #       limits:
-  #         memory: 200M
-  #   environment:
-  #     MONGO_INITDB_ROOT_USERNAME_FILE: /run/secrets/streaming-database-user
-  #     MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/streaming-database-password
-
-  visualizer:
-    image: dockersamples/visualizer
-    stop_grace_period: 20s
-    networks:
-      - backend
-    ports:
-      - 80:8080
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    deploy:
-      placement:
-        constraints:
-          - node.role == manager
