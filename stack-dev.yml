@@ -10,6 +10,9 @@ volumes:
   registry:
     external: true
     name: "rinnegan-registry-volume"
+  streaming:
+    external: true
+    name: "rinnegan-streaming-volume"
 
 networks:
   database:
@@ -24,6 +27,9 @@ networks:
   registry:
     external: true
     name: "rinnegan-registry-network"
+  streaming:
+    external: true
+    name: "rinnegan-streaming-network"
 
 secrets:
   database-password:
@@ -54,8 +60,26 @@ secrets:
     external: true
   backend-monkeylearn-model-id:
     external: true
+  streaming-database-user:
+    external: true
+  streaming-database-password:
+    external: true
 
 services:
+  visualizer:
+    image: dockersamples/visualizer
+    stop_grace_period: 20s
+    networks:
+      - registry
+    ports:
+      - 80:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+
   registry:
     image: onlinejudge95/rinnegan-registry:1
     networks:
@@ -80,6 +104,39 @@ services:
     environment:
       POSTGRES_PASSWORD_FILE: /run/secrets/database-password
       POSTGRES_USER_FILE: /run/secrets/database-user
+
+  redis:
+    image: localhost:6000/rinnegan-redis:latest
+    depends_on:
+      - registry
+    networks:
+      - queue
+      - registry
+    ports:
+      - 6379:6379
+    env_file:
+      - .secrets.queue
+    volumes:
+      - queue:/data
+
+  mongo:
+    image: localhost:6000/rinnegan-mongo:latest
+    depends_on:
+      - registry
+    networks:
+      - streaming
+      - registry
+    ports:
+      - 27017:27017
+    secrets:
+      - streaming-database-user
+      - streaming-database-password
+    environment:
+      MONGO_INITDB_ROOT_USERNAME_FILE: /run/secrets/streaming-database-user
+      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/streaming-database-password
+      MONGO_INITDB_DATABASE: rinnegan
+    volumes:
+      - streaming:/data/db
 
   flask:
     image: localhost:6000/rinnegan-flask:latest
@@ -125,20 +182,6 @@ services:
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
 
-  redis:
-    image: localhost:6000/rinnegan-redis:latest
-    depends_on:
-      - registry
-    networks:
-      - queue
-      - registry
-    ports:
-      - 6379:6379
-    env_file:
-      - .secrets.queue
-    volumes:
-      - queue:/data
-
   worker:
     image: localhost:6000/rinnegan-flask:latest
     depends_on:
@@ -182,17 +225,3 @@ services:
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
-
-  visualizer:
-    image: dockersamples/visualizer
-    stop_grace_period: 20s
-    networks:
-      - registry
-    ports:
-      - 80:8080
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    deploy:
-      placement:
-        constraints:
-          - node.role == manager

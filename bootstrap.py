@@ -73,6 +73,7 @@ if __name__ == "__main__":
             "rinnegan-backend-network",
             "rinnegan-queue-network",
             "rinnegan-registry-network",
+            "rinnegan-streaming-network"
         ]
     )
     obj.manage_volumes(
@@ -80,6 +81,7 @@ if __name__ == "__main__":
             "rinnegan-database-volume",
             "rinnegan-queue-volume",
             "rinnegan-registry-volume",
+            "rinnegan-streaming-volume"
         ]
     )
-    obj.manage_secrets(["database", "backend"])
+    obj.manage_secrets(["database", "backend", "streaming-database"])
