@@ -52,17 +52,25 @@ secrets:
     external: true
   backend-s3-bucket:
     external: true
-  # queue-password:
-  #   external: true
   backend-monkeylearn-api-token:
     external: true
   backend-monkeylearn-model-id:
     external: true
-  backend-streaming-database-uri:
+  backend-streaming-string:
+    external: true
+  backend-streaming-auth-source:
+    external: true
+  backend-streaming-database:
+    external: true
+  backend-streaming-collection:
     external: true
   streaming-database-user:
     external: true
   streaming-database-password:
+    external: true
+  streaming-database-root-user:
+    external: true
+  streaming-database-root-password:
     external: true
 
 services:
@@ -124,14 +132,16 @@ services:
           memory: 200M
 
   mongo:
-    image: onlinejudge95/rinnegan-mongo
+    image: onlinejudge95/rinnegan-mongo:pr-2-merge
     networks:
       - streaming
     ports:
       - 27017:27017
     secrets:
-      - streaming-database-password
+      - streaming-database-root-user
+      - streaming-database-root-password
       - streaming-database-user
+      - streaming-database-password
     volumes:
       - streaming:/data/db
     deploy:
@@ -145,11 +155,14 @@ services:
         limits:
           memory: 200M
     environment:
-      MONGO_INITDB_ROOT_USERNAME_FILE: /run/secrets/streaming-database-user
-      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/streaming-database-password
+      MONGO_INITDB_ROOT_USERNAME_FILE: /run/secrets/streaming-database-root-user
+      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/streaming-database-root-password
+      MONGO_INITDB_USERNAME_FILE: /run/secrets/streaming-database-user
+      MONGO_INITDB_PASSWORD_FILE: /run/secrets/streaming-database-password
+      MONGO_INITDB_DATABASE: rinnegan
 
   flask:
-    image: onlinejudge95/rinnegan-flask:1-slim-buster
+    image: onlinejudge95/rinnegan-flask:pr-44-merge
     depends_on:
       - postgres
       - redis
@@ -174,7 +187,10 @@ services:
       - backend-s3-bucket
       - backend-monkeylearn-api-token
       - backend-monkeylearn-model-id
-      - backend-streaming-database-uri
+      - backend-streaming-string
+      - backend-streaming-auth-source
+      - backend-streaming-database
+      - backend-streaming-collection
     deploy:
       replicas: 1
       placement:
@@ -201,13 +217,15 @@ services:
       S3_BUCKET_FILE: /run/secrets/backend-s3-bucket
       MONKEYLEARN_API_TOKEN_FILE: /run/secrets/backend-monkeylearn-api-token
       MONKEYLEARN_MODEL_ID_FILE: /run/secrets/backend-monkeylearn-model-id
-      MONGO_URI_FILE: /run/secrets/backend-streaming-database-uri
+      MONGO_URI_FILE: /run/secrets/backend-streaming-host
+      MONGO_AUTH_SOURCE_FILE: /run/secrets/backend-streaming-auth-source
+      MONGO_MODEL_COLLECTION_FILE: /run/secrets/backend-streaming-collection
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
 
   worker:
-    image: onlinejudge95/rinnegan-flask:1-slim-buster
+    image: onlinejudge95/rinnegan-flask:pr-44-merge
     depends_on:
       - redis
       - mongo
@@ -232,7 +250,10 @@ services:
       - backend-s3-bucket
       - backend-monkeylearn-api-token
       - backend-monkeylearn-model-id
-      - backend-streaming-database-uri
+      - backend-streaming-string
+      - backend-streaming-auth-source
+      - backend-streaming-database
+      - backend-streaming-collection
     deploy:
       replicas: 2
       placement:
@@ -259,7 +280,9 @@ services:
       S3_BUCKET_FILE: /run/secrets/backend-s3-bucket
       MONKEYLEARN_API_TOKEN_FILE: /run/secrets/backend-monkeylearn-api-token
       MONKEYLEARN_MODEL_ID_FILE: /run/secrets/backend-monkeylearn-model-id
-      MONGO_URI_FILE: /run/secrets/backend-streaming-database-uri
+      MONGO_URI_FILE: /run/secrets/backend-streaming-host
+      MONGO_AUTH_SOURCE_FILE: /run/secrets/backend-streaming-auth-source
+      MONGO_MODEL_COLLECTION_FILE: /run/secrets/backend-streaming-collection
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
       STAGE: prod
       PYTHONDONTWRITEBYTECODE: 1

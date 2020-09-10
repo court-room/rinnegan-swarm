@@ -78,8 +78,6 @@ secrets:
     external: true
   streaming-database-root-password:
     external: true
-  backend-streaming-connection-uri:
-    external: true
 
 services:
   visualizer:
