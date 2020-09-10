@@ -78,6 +78,10 @@ secrets:
     external: true
   streaming-database-password:
     external: true
+  streaming-database-root-user:
+    external: true
+  streaming-database-root-password:
+    external: true
   backend-streaming-connection-uri:
     external: true
 
@@ -145,11 +149,15 @@ services:
     ports:
       - 27017:27017
     secrets:
+      - streaming-database-root-user
+      - streaming-database-root-password
       - streaming-database-user
       - streaming-database-password
     environment:
-      MONGO_INITDB_ROOT_USERNAME_FILE: /run/secrets/streaming-database-user
-      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/streaming-database-password
+      MONGO_INITDB_ROOT_USERNAME_FILE: /run/secrets/streaming-database-root-user
+      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/streaming-database-root-password
+      MONGO_INITDB_USERNAME_FILE: /run/secrets/streaming-database-user
+      MONGO_INITDB_PASSWORD_FILE: /run/secrets/streaming-database-password
       MONGO_INITDB_DATABASE: rinnegan
     volumes:
       - streaming:/data/db
