@@ -48,6 +48,8 @@ secrets:
     external: true
   backend-twitter-consumer-secret:
     external: true
+  backend-twitter-post-limit:
+    external: true
   backend-cloud-vendor:
     external: true
   backend-aws-access-key-id:
@@ -60,9 +62,21 @@ secrets:
     external: true
   backend-monkeylearn-model-id:
     external: true
+  backend-streaming-string:
+    external: true
+  backend-streaming-auth-source:
+    external: true
+  backend-streaming-database:
+    external: true
+  backend-streaming-collection:
+    external: true
   streaming-database-user:
     external: true
   streaming-database-password:
+    external: true
+  streaming-database-root-user:
+    external: true
+  streaming-database-root-password:
     external: true
 
 services:
@@ -129,11 +143,15 @@ services:
     ports:
       - 27017:27017
     secrets:
+      - streaming-database-root-user
+      - streaming-database-root-password
       - streaming-database-user
       - streaming-database-password
     environment:
-      MONGO_INITDB_ROOT_USERNAME_FILE: /run/secrets/streaming-database-user
-      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/streaming-database-password
+      MONGO_INITDB_ROOT_USERNAME_FILE: /run/secrets/streaming-database-root-user
+      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/streaming-database-root-password
+      MONGO_INITDB_USERNAME_FILE: /run/secrets/streaming-database-user
+      MONGO_INITDB_PASSWORD_FILE: /run/secrets/streaming-database-password
       MONGO_INITDB_DATABASE: rinnegan
     volumes:
       - streaming:/data/db
@@ -148,6 +166,7 @@ services:
       - database
       - queue
       - registry
+      - streaming
     ports:
       - 5000:5000
     secrets:
@@ -157,12 +176,17 @@ services:
       - backend-test-database-string
       - backend-twitter-consumer-key
       - backend-twitter-consumer-secret
+      - backend-twitter-post-limit
       - backend-cloud-vendor
       - backend-aws-access-key-id
       - backend-aws-secret-access-key
       - backend-s3-bucket
       - backend-monkeylearn-api-token
       - backend-monkeylearn-model-id
+      - backend-streaming-string
+      - backend-streaming-auth-source
+      - backend-streaming-database
+      - backend-streaming-collection
     environment:
       FLASK_APP: manage:app
       NODE_TYPE: server
@@ -172,12 +196,17 @@ services:
       DATABASE_URL_FILE: /run/secrets/backend-database-string
       TWITTER_CONSUMER_KEY_FILE: /run/secrets/backend-twitter-consumer-key
       TWITTER_CONSUMER_SECRET_FILE: /run/secrets/backend-twitter-consumer-secret
+      TWITTER_POST_LIMITS_FILE: /run/secrets/backend-twitter-post-limit
       CLOUD_VENDOR_FILE: /run/secrets/backend-cloud-vendor
       AWS_ACCESS_KEY_ID_FILE: /run/secrets/backend-aws-access-key-id
       AWS_SECRET_ACCESS_KEY_FILE: /run/secrets/backend-aws-secret-access-key
       S3_BUCKET_FILE: /run/secrets/backend-s3-bucket
       MONKEYLEARN_API_TOKEN_FILE: /run/secrets/backend-monkeylearn-api-token
       MONKEYLEARN_MODEL_ID_FILE: /run/secrets/backend-monkeylearn-model-id
+      MONGO_URI_FILE: /run/secrets/backend-streaming-host
+      MONGO_AUTH_SOURCE_FILE: /run/secrets/backend-streaming-auth-source
+      MONGO_MODEL_COLLECTION_FILE: /run/secrets/backend-streaming-collection
+      MONGO_DATABASE_FILE: /run/secrets/backend-streaming-database
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
@@ -192,6 +221,7 @@ services:
       - backend
       - queue
       - registry
+      - streaming
     ports:
       - 8001:5000
     secrets:
@@ -201,12 +231,17 @@ services:
       - backend-test-database-string
       - backend-twitter-consumer-key
       - backend-twitter-consumer-secret
+      - backend-twitter-post-limit
       - backend-cloud-vendor
       - backend-aws-access-key-id
       - backend-aws-secret-access-key
       - backend-s3-bucket
       - backend-monkeylearn-api-token
       - backend-monkeylearn-model-id
+      - backend-streaming-string
+      - backend-streaming-auth-source
+      - backend-streaming-database
+      - backend-streaming-collection
     environment:
       FLASK_APP: manage:app
       NODE_TYPE: worker
@@ -216,12 +251,17 @@ services:
       DATABASE_URL_FILE: /run/secrets/backend-database-string
       TWITTER_CONSUMER_KEY_FILE: /run/secrets/backend-twitter-consumer-key
       TWITTER_CONSUMER_SECRET_FILE: /run/secrets/backend-twitter-consumer-secret
+      TWITTER_POST_LIMITS_FILE: /run/secrets/backend-twitter-post-limit
       CLOUD_VENDOR_FILE: /run/secrets/backend-cloud-vendor
       AWS_ACCESS_KEY_ID_FILE: /run/secrets/backend-aws-access-key-id
       AWS_SECRET_ACCESS_KEY_FILE: /run/secrets/backend-aws-secret-access-key
       S3_BUCKET_FILE: /run/secrets/backend-s3-bucket
       MONKEYLEARN_API_TOKEN_FILE: /run/secrets/backend-monkeylearn-api-token
       MONKEYLEARN_MODEL_ID_FILE: /run/secrets/backend-monkeylearn-model-id
+      MONGO_URI_FILE: /run/secrets/backend-streaming-string
+      MONGO_AUTH_SOURCE_FILE: /run/secrets/backend-streaming-auth-source
+      MONGO_DATABASE_FILE: /run/secrets/backend-streaming-database
+      MONGO_MODEL_COLLECTION_FILE: /run/secrets/backend-streaming-collection
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1

@@ -4,4 +4,4 @@ env/
 .secrets.database
 .secrets.backend
 .secrets.queue
-.secrets.streaming-database
+.secrets.streaming
