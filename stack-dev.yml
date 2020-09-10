@@ -206,6 +206,7 @@ services:
       MONGO_URI_FILE: /run/secrets/backend-streaming-host
       MONGO_AUTH_SOURCE_FILE: /run/secrets/backend-streaming-auth-source
       MONGO_MODEL_COLLECTION_FILE: /run/secrets/backend-streaming-collection
+      MONGO_DATABASE_FILE: /run/secrets/backend-streaming-database
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1

@@ -219,6 +219,7 @@ services:
       MONKEYLEARN_MODEL_ID_FILE: /run/secrets/backend-monkeylearn-model-id
       MONGO_URI_FILE: /run/secrets/backend-streaming-string
       MONGO_AUTH_SOURCE_FILE: /run/secrets/backend-streaming-auth-source
+      MONGO_DATABASE_FILE: /run/secrets/backend-streaming-database
       MONGO_MODEL_COLLECTION_FILE: /run/secrets/backend-streaming-collection
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
       PYTHONDONTWRITEBYTECODE: 1
@@ -282,6 +283,7 @@ services:
       MONKEYLEARN_MODEL_ID_FILE: /run/secrets/backend-monkeylearn-model-id
       MONGO_URI_FILE: /run/secrets/backend-streaming-string
       MONGO_AUTH_SOURCE_FILE: /run/secrets/backend-streaming-auth-source
+      MONGO_DATABASE_FILE: /run/secrets/backend-streaming-database
       MONGO_MODEL_COLLECTION_FILE: /run/secrets/backend-streaming-collection
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
       STAGE: prod
