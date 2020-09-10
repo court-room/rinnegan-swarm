@@ -62,11 +62,23 @@ secrets:
     external: true
   backend-monkeylearn-model-id:
     external: true
+  backend-streaming-host:
+    external: true
+  backend-streaming-port:
+    external: true
+  backend-streaming-user:
+    external: true
+  backend-streaming-password:
+    external: true
+  backend-streaming-database:
+    external: true
+  backend-streaming-collection:
+    external: true
   streaming-database-user:
     external: true
   streaming-database-password:
     external: true
-  backend-streaming-database-uri:
+  backend-streaming-connection-uri:
     external: true
 
 services:
@@ -152,6 +164,7 @@ services:
       - database
       - queue
       - registry
+      - streaming
     ports:
       - 5000:5000
     secrets:
@@ -168,7 +181,12 @@ services:
       - backend-s3-bucket
       - backend-monkeylearn-api-token
       - backend-monkeylearn-model-id
-      - backend-streaming-database-uri
+      - backend-streaming-host
+      - backend-streaming-port
+      - backend-streaming-user
+      - backend-streaming-password
+      - backend-streaming-database
+      - backend-streaming-collection
     environment:
       FLASK_APP: manage:app
       NODE_TYPE: server
@@ -185,7 +203,12 @@ services:
       S3_BUCKET_FILE: /run/secrets/backend-s3-bucket
       MONKEYLEARN_API_TOKEN_FILE: /run/secrets/backend-monkeylearn-api-token
       MONKEYLEARN_MODEL_ID_FILE: /run/secrets/backend-monkeylearn-model-id
-      MONGO_URI_FILE: /run/secrets/backend-streaming-database-uri
+      MONGO_HOST_FILE: /run/secrets/backend-streaming-host
+      MONGO_PORT_FILE: /run/secrets/backend-streaming-port
+      MONGO_USER_FILE: /run/secrets/backend-streaming-user
+      MONGO_PASSWORD_FILE: /run/secrets/backend-streaming-password
+      MONGO_DATABASE_FILE: /run/secrets/backend-streaming-database
+      MONGO_MODEL_COLLECTION_FILE: /run/secrets/backend-streaming-collection
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
@@ -200,6 +223,7 @@ services:
       - backend
       - queue
       - registry
+      - streaming
     ports:
       - 8001:5000
     secrets:
@@ -216,7 +240,12 @@ services:
       - backend-s3-bucket
       - backend-monkeylearn-api-token
       - backend-monkeylearn-model-id
-      - backend-streaming-database-uri
+      - backend-streaming-host
+      - backend-streaming-port
+      - backend-streaming-user
+      - backend-streaming-password
+      - backend-streaming-database
+      - backend-streaming-collection
     environment:
       FLASK_APP: manage:app
       NODE_TYPE: worker
@@ -233,7 +262,12 @@ services:
       S3_BUCKET_FILE: /run/secrets/backend-s3-bucket
       MONKEYLEARN_API_TOKEN_FILE: /run/secrets/backend-monkeylearn-api-token
       MONKEYLEARN_MODEL_ID_FILE: /run/secrets/backend-monkeylearn-model-id
-      MONGO_URI_FILE: /run/secrets/backend-streaming-database-uri
+      MONGO_HOST_FILE: /run/secrets/backend-streaming-host
+      MONGO_PORT_FILE: /run/secrets/backend-streaming-port
+      MONGO_USER_FILE: /run/secrets/backend-streaming-user
+      MONGO_PASSWORD_FILE: /run/secrets/backend-streaming-password
+      MONGO_DATABASE_FILE: /run/secrets/backend-streaming-database
+      MONGO_MODEL_COLLECTION_FILE: /run/secrets/backend-streaming-collection
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1

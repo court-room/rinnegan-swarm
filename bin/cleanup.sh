@@ -18,6 +18,7 @@ docker secret rm backend-aws-secret-access-key
 docker secret rm backend-s3-bucket
 docker secret rm backend-monkeylearn-api-token
 docker secret rm backend-monkeylearn-model-id
-docker secret rm backend-streaming-database-uri
+docker secret rm backend-streaming-connection-uri
 docker secret rm streaming-database-user
-docker secret rm streaming-database-password
+docker secret rm backend-streaming-database
+docker secret rm backend-streaming-collection
