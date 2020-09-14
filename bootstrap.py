@@ -74,6 +74,7 @@ if __name__ == "__main__":
             "rinnegan-queue-network",
             "rinnegan-registry-network",
             "rinnegan-streaming-network",
+            "rinnegan-nginx-network",
         ]
     )
     obj.manage_volumes(

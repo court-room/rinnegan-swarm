@@ -30,6 +30,9 @@ networks:
   streaming:
     external: true
     name: "rinnegan-streaming-network"
+  nginx:
+    external: true
+    name: "rinnegan-nginx-network"
 
 secrets:
   database-password:
@@ -86,13 +89,9 @@ services:
     networks:
       - registry
     ports:
-      - 80:8080
+      - 8080:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    deploy:
-      placement:
-        constraints:
-          - node.role == manager
 
   registry:
     image: onlinejudge95/rinnegan-registry:1
@@ -156,6 +155,17 @@ services:
     volumes:
       - streaming:/data/db
 
+  nginx:
+    image: localhost:6000/rinnegan-nginx:latest
+    depends_on:
+      - flask
+      - worker
+    networks:
+      - registry
+      - nginx
+    ports:
+      - 80:80
+
   flask:
     image: localhost:6000/rinnegan-flask:latest
     depends_on:
@@ -167,6 +177,7 @@ services:
       - queue
       - registry
       - streaming
+      - nginx
     ports:
       - 5000:5000
     secrets:
