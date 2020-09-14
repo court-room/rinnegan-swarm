@@ -165,7 +165,7 @@ services:
       MONGO_INITDB_DATABASE: rinnegan
 
   nginx:
-    image: onlinejudge95/rinnegan-nginx:latest
+    image: onlinejudge95/rinnegan-nginx:staging
     depends_on:
       - flask
       - worker
