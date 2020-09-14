@@ -82,7 +82,6 @@ secrets:
 services:
   visualizer:
     image: dockersamples/visualizer
-    stop_grace_period: 20s
     networks:
       - registry
     ports:
@@ -203,7 +202,7 @@ services:
       S3_BUCKET_FILE: /run/secrets/backend-s3-bucket
       MONKEYLEARN_API_TOKEN_FILE: /run/secrets/backend-monkeylearn-api-token
       MONKEYLEARN_MODEL_ID_FILE: /run/secrets/backend-monkeylearn-model-id
-      MONGO_URI_FILE: /run/secrets/backend-streaming-host
+      MONGO_URI_FILE: /run/secrets/backend-streaming-string
       MONGO_AUTH_SOURCE_FILE: /run/secrets/backend-streaming-auth-source
       MONGO_MODEL_COLLECTION_FILE: /run/secrets/backend-streaming-collection
       MONGO_DATABASE_FILE: /run/secrets/backend-streaming-database

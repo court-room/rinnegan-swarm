@@ -1,7 +1,7 @@
 version: "3.8"
 
 volumes:
-  data:
+  database:
     external: true
     name: "rinnegan-database-volume"
   queue:
@@ -76,7 +76,6 @@ secrets:
 services:
   visualizer:
     image: dockersamples/visualizer
-    stop_grace_period: 20s
     networks:
       - backend
     ports:
@@ -96,7 +95,7 @@ services:
       - database-password
       - database-user
     volumes:
-      - data:/var/lib/postgresql/data
+      - database:/var/lib/postgresql/data
     deploy:
       replicas: 1
       placement:
@@ -111,7 +110,7 @@ services:
       POSTGRES_USER_FILE: /run/secrets/database-user
 
   redis:
-    image: onlinejudge95/rinnegan-redis:1-alpine
+    image: onlinejudge95/rinnegan-redis:1.0.1-alpine
     networks:
       - queue
     ports:
@@ -132,7 +131,7 @@ services:
           memory: 200M
 
   mongo:
-    image: onlinejudge95/rinnegan-mongo:pr-2-merge
+    image: onlinejudge95/rinnegan-mongo:1.0.0-alpine
     networks:
       - streaming
     ports:
@@ -162,7 +161,7 @@ services:
       MONGO_INITDB_DATABASE: rinnegan
 
   flask:
-    image: onlinejudge95/rinnegan-flask:pr-44-merge
+    image: onlinejudge95/rinnegan-flask:staging
     depends_on:
       - postgres
       - redis
@@ -226,7 +225,7 @@ services:
       PYTHONUNBUFFERED: 1
 
   worker:
-    image: onlinejudge95/rinnegan-flask:pr-44-merge
+    image: onlinejudge95/rinnegan-flask:staging
     depends_on:
       - redis
       - mongo
