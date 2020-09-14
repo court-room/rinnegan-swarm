@@ -13,9 +13,6 @@ volumes:
   streaming:
     external: true
     name: "rinnegan-streaming-volume"
-  nginx:
-    external: true
-    name: "rinnegan-nginx-volume"
 
 networks:
   database:
@@ -159,7 +156,7 @@ services:
       - streaming:/data/db
 
   nginx:
-    image: localhost:6000/rinnegan-react:latest
+    image: localhost:6000/rinnegan-nginx:latest
     depends_on:
       - flask
       - worker
@@ -168,8 +165,6 @@ services:
       - nginx
     ports:
       - 80:80
-    volumes:
-      - nginx:/usr/share/nginx/html
 
   flask:
     image: localhost:6000/rinnegan-flask:latest
