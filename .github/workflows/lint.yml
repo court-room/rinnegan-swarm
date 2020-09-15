@@ -22,11 +22,11 @@ jobs:
         run: |
           black \
           --check \
-          --config pyproject.toml \
+          --config configs/pyproject.toml \
           bootstrap.py
 
       - name: Run flake8
         run: |
           flake8 \
-          --config setup.cfg \
+          --config configs/setup.cfg \
           bootstrap.py
