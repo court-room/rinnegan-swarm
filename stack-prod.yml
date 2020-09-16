@@ -41,6 +41,8 @@ secrets:
     external: true
   backend-redis-string:
     external: true
+  backend-redis-queue:
+    external: true
   backend-twitter-consumer-key:
     external: true
   backend-twitter-consumer-secret:
@@ -198,6 +200,7 @@ services:
     secrets:
       - backend-secret-key
       - backend-redis-string
+      - backend-redis-queue
       - backend-database-string
       - backend-test-database-string
       - backend-twitter-consumer-key
@@ -225,9 +228,10 @@ services:
     environment:
       FLASK_APP: manage:app
       NODE_TYPE: server
-      FLASK_ENV: development
+      FLASK_ENV: production
       SECRET_KEY_FILE: /run/secrets/backend-secret-key
       REDIS_URL_FILE: /run/secrets/backend-redis-string
+      REDIS_QUEUE_FILE: /run/secrets/backend-redis-queue
       DATABASE_URL_FILE: /run/secrets/backend-database-string
       TWITTER_CONSUMER_KEY_FILE: /run/secrets/backend-twitter-consumer-key
       TWITTER_CONSUMER_SECRET_FILE: /run/secrets/backend-twitter-consumer-secret
@@ -261,6 +265,7 @@ services:
     secrets:
       - backend-secret-key
       - backend-redis-string
+      - backend-redis-queue
       - backend-database-string
       - backend-test-database-string
       - backend-twitter-consumer-key
@@ -289,9 +294,10 @@ services:
     environment:
       FLASK_APP: manage:app
       NODE_TYPE: worker
-      FLASK_ENV: development
+      FLASK_ENV: production
       SECRET_KEY_FILE: /run/secrets/backend-secret-key
       REDIS_URL_FILE: /run/secrets/backend-redis-string
+      REDIS_QUEUE_FILE: /run/secrets/backend-redis-queue
       DATABASE_URL_FILE: /run/secrets/backend-database-string
       TWITTER_CONSUMER_KEY_FILE: /run/secrets/backend-twitter-consumer-key
       TWITTER_CONSUMER_SECRET_FILE: /run/secrets/backend-twitter-consumer-secret
