@@ -203,7 +203,7 @@ services:
     environment:
       FLASK_APP: manage:app
       NODE_TYPE: server
-      FLASK_ENV: production
+      FLASK_ENV: development
       SECRET_KEY_FILE: /run/secrets/backend-secret-key
       REDIS_URL_FILE: /run/secrets/backend-redis-string
       REDIS_QUEUE_FILE: /run/secrets/backend-redis-queue
@@ -260,7 +260,7 @@ services:
     environment:
       FLASK_APP: manage:app
       NODE_TYPE: worker
-      FLASK_ENV: production
+      FLASK_ENV: development
       SECRET_KEY_FILE: /run/secrets/backend-secret-key
       REDIS_URL_FILE: /run/secrets/backend-redis-string
       REDIS_QUEUE_FILE: /run/secrets/backend-redis-queue
