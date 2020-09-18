@@ -186,7 +186,7 @@ services:
           memory: 200M
 
   flask:
-    image: onlinejudge95/rinnegan-flask:staging
+    image: onlinejudge95/rinnegan-flask:pr-59-merge
     depends_on:
       - postgres
       - redis
@@ -228,7 +228,7 @@ services:
     environment:
       FLASK_APP: manage:app
       NODE_TYPE: server
-      FLASK_ENV: production
+      FLASK_ENV: development
       SECRET_KEY_FILE: /run/secrets/backend-secret-key
       REDIS_URL_FILE: /run/secrets/backend-redis-string
       REDIS_QUEUE_FILE: /run/secrets/backend-redis-queue
@@ -251,7 +251,7 @@ services:
       PYTHONUNBUFFERED: 1
 
   worker:
-    image: onlinejudge95/rinnegan-flask:staging
+    image: onlinejudge95/rinnegan-flask:pr-59-merge
     depends_on:
       - redis
       - mongo
@@ -294,7 +294,7 @@ services:
     environment:
       FLASK_APP: manage:app
       NODE_TYPE: worker
-      FLASK_ENV: production
+      FLASK_ENV: development
       SECRET_KEY_FILE: /run/secrets/backend-secret-key
       REDIS_URL_FILE: /run/secrets/backend-redis-string
       REDIS_QUEUE_FILE: /run/secrets/backend-redis-queue

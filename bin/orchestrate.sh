@@ -17,7 +17,4 @@ else
     docker stack deploy --compose-file stack-prod.yml --orchestrator swarm --prune rinnegan
 fi
 
-sleep 10
-# watch docker stack ps rinnegan
-
-head < `docker service logs --follow rinnegan_flask`
+watch docker stack ps rinnegan
