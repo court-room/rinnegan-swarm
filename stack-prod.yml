@@ -69,6 +69,10 @@ secrets:
     external: true
   backend-streaming-collection:
     external: true
+  backend-new-relic-license-key:
+    external: true
+  backend-new-relic-app-name:
+    external: true
   streaming-database-user:
     external: true
   streaming-database-password:
@@ -216,6 +220,8 @@ services:
       - backend-streaming-auth-source
       - backend-streaming-database
       - backend-streaming-collection
+      - backend-new-relic-license-key
+      - backend-new-relic-app-name
     deploy:
       replicas: 1
       placement:
@@ -246,6 +252,8 @@ services:
       MONGO_AUTH_SOURCE_FILE: /run/secrets/backend-streaming-auth-source
       MONGO_DATABASE_FILE: /run/secrets/backend-streaming-database
       MONGO_MODEL_COLLECTION_FILE: /run/secrets/backend-streaming-collection
+      NEW_RELIC_LICENSE_KEY_FILE: /run/secrets/backend-new-relic-license-key
+      NEW_RELIC_APP_NAME_FILE: /run/secrets/backend-new-relic-app-name
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
@@ -281,6 +289,8 @@ services:
       - backend-streaming-auth-source
       - backend-streaming-database
       - backend-streaming-collection
+      - backend-new-relic-license-key
+      - backend-new-relic-app-name
     deploy:
       replicas: 2
       placement:
@@ -312,6 +322,8 @@ services:
       MONGO_AUTH_SOURCE_FILE: /run/secrets/backend-streaming-auth-source
       MONGO_DATABASE_FILE: /run/secrets/backend-streaming-database
       MONGO_MODEL_COLLECTION_FILE: /run/secrets/backend-streaming-collection
+      NEW_RELIC_LICENSE_KEY_FILE: /run/secrets/backend-new-relic-license-key
+      NEW_RELIC_APP_NAME_FILE: /run/secrets/backend-new-relic-app-name
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
