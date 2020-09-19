@@ -190,7 +190,7 @@ services:
           memory: 200M
 
   flask:
-    image: onlinejudge95/rinnegan-flask:pr-59-merge
+    image: onlinejudge95/rinnegan-flask:staging
     depends_on:
       - postgres
       - redis
@@ -259,7 +259,7 @@ services:
       PYTHONUNBUFFERED: 1
 
   worker:
-    image: onlinejudge95/rinnegan-flask:pr-59-merge
+    image: onlinejudge95/rinnegan-flask:staging
     depends_on:
       - redis
       - mongo
