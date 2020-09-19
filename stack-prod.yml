@@ -69,6 +69,10 @@ secrets:
     external: true
   backend-streaming-collection:
     external: true
+  backend-new-relic-license-key:
+    external: true
+  backend-new-relic-app-name:
+    external: true
   streaming-database-user:
     external: true
   streaming-database-password:
@@ -186,7 +190,7 @@ services:
           memory: 200M
 
   flask:
-    image: onlinejudge95/rinnegan-flask:pr-59-merge
+    image: onlinejudge95/rinnegan-flask:staging
     depends_on:
       - postgres
       - redis
@@ -216,6 +220,8 @@ services:
       - backend-streaming-auth-source
       - backend-streaming-database
       - backend-streaming-collection
+      - backend-new-relic-license-key
+      - backend-new-relic-app-name
     deploy:
       replicas: 1
       placement:
@@ -228,7 +234,7 @@ services:
     environment:
       FLASK_APP: manage:app
       NODE_TYPE: server
-      FLASK_ENV: development
+      FLASK_ENV: production
       SECRET_KEY_FILE: /run/secrets/backend-secret-key
       REDIS_URL_FILE: /run/secrets/backend-redis-string
       REDIS_QUEUE_FILE: /run/secrets/backend-redis-queue
@@ -246,12 +252,14 @@ services:
       MONGO_AUTH_SOURCE_FILE: /run/secrets/backend-streaming-auth-source
       MONGO_DATABASE_FILE: /run/secrets/backend-streaming-database
       MONGO_MODEL_COLLECTION_FILE: /run/secrets/backend-streaming-collection
+      NEW_RELIC_LICENSE_KEY_FILE: /run/secrets/backend-new-relic-license-key
+      NEW_RELIC_APP_NAME_FILE: /run/secrets/backend-new-relic-app-name
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
 
   worker:
-    image: onlinejudge95/rinnegan-flask:pr-59-merge
+    image: onlinejudge95/rinnegan-flask:staging
     depends_on:
       - redis
       - mongo
@@ -281,6 +289,8 @@ services:
       - backend-streaming-auth-source
       - backend-streaming-database
       - backend-streaming-collection
+      - backend-new-relic-license-key
+      - backend-new-relic-app-name
     deploy:
       replicas: 2
       placement:
@@ -294,7 +304,7 @@ services:
     environment:
       FLASK_APP: manage:app
       NODE_TYPE: worker
-      FLASK_ENV: development
+      FLASK_ENV: production
       SECRET_KEY_FILE: /run/secrets/backend-secret-key
       REDIS_URL_FILE: /run/secrets/backend-redis-string
       REDIS_QUEUE_FILE: /run/secrets/backend-redis-queue
@@ -312,6 +322,8 @@ services:
       MONGO_AUTH_SOURCE_FILE: /run/secrets/backend-streaming-auth-source
       MONGO_DATABASE_FILE: /run/secrets/backend-streaming-database
       MONGO_MODEL_COLLECTION_FILE: /run/secrets/backend-streaming-collection
+      NEW_RELIC_LICENSE_KEY_FILE: /run/secrets/backend-new-relic-license-key
+      NEW_RELIC_APP_NAME_FILE: /run/secrets/backend-new-relic-app-name
       DATABASE_TEST_URL_FILE: DUMMY_TEST_URL
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
