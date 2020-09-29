@@ -223,7 +223,7 @@ services:
       - backend-new-relic-license-key
       - backend-new-relic-app-name
     deploy:
-      replicas: 1
+      replicas: 2
       placement:
         constraints:
           - node.role == worker
