@@ -1,20 +1,23 @@
 version: "3.8"
 
 volumes:
+  registry:
+    external: true
+    name: "rinnegan-registry-volume"
   database:
     external: true
     name: "rinnegan-database-volume"
   queue:
     external: true
     name: "rinnegan-queue-volume"
-  registry:
-    external: true
-    name: "rinnegan-registry-volume"
   streaming:
     external: true
     name: "rinnegan-streaming-volume"
 
 networks:
+  registry:
+    external: true
+    name: "rinnegan-registry-network"
   database:
     external: true
     name: "rinnegan-database-network"
@@ -24,9 +27,6 @@ networks:
   queue:
     external: true
     name: "rinnegan-queue-network"
-  registry:
-    external: true
-    name: "rinnegan-registry-network"
   streaming:
     external: true
     name: "rinnegan-streaming-network"
@@ -38,6 +38,16 @@ secrets:
   database-password:
     external: true
   database-user:
+    external: true
+  queue-password:
+    external: true
+  streaming-database-root-user:
+    external: true
+  streaming-database-root-password:
+    external: true
+  streaming-database-user:
+    external: true
+  streaming-database-password:
     external: true
   backend-secret-key:
     external: true
@@ -78,14 +88,6 @@ secrets:
   backend-new-relic-license-key:
     external: true
   backend-new-relic-app-name:
-    external: true
-  streaming-database-user:
-    external: true
-  streaming-database-password:
-    external: true
-  streaming-database-root-user:
-    external: true
-  streaming-database-root-password:
     external: true
 
 services:
@@ -132,10 +134,12 @@ services:
       - registry
     ports:
       - 6379:6379
-    env_file:
-      - .secrets.queue
+    secrets:
+      - queue-password
     volumes:
       - queue:/data
+    environment:
+      REDIS_PASSWORD_FILE: /run/secrets/queue-password
 
   mongo:
     image: localhost:6000/rinnegan-mongo:latest
@@ -151,20 +155,19 @@ services:
       - streaming-database-root-password
       - streaming-database-user
       - streaming-database-password
+    volumes:
+        - streaming:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME_FILE: /run/secrets/streaming-database-root-user
       MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/streaming-database-root-password
       MONGO_INITDB_USERNAME_FILE: /run/secrets/streaming-database-user
       MONGO_INITDB_PASSWORD_FILE: /run/secrets/streaming-database-password
       MONGO_INITDB_DATABASE: rinnegan
-    volumes:
-      - streaming:/data/db
 
   nginx:
     image: localhost:6000/rinnegan-nginx:latest
     depends_on:
-      - flask
-      - worker
+      - registry
     networks:
       - registry
       - nginx
