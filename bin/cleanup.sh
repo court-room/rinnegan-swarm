@@ -29,3 +29,4 @@ docker secret rm streaming-database-root-user
 docker secret rm streaming-database-root-password
 docker secret rm streaming-database-user
 docker secret rm streaming-database-password
+docker secret rm queue-password

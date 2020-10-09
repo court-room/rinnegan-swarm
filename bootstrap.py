@@ -69,20 +69,20 @@ if __name__ == "__main__":
     obj = DockerClient()
     obj.manage_networks(
         [
+            "rinnegan-registry-network",
             "rinnegan-database-network",
             "rinnegan-backend-network",
             "rinnegan-queue-network",
-            "rinnegan-registry-network",
             "rinnegan-streaming-network",
             "rinnegan-nginx-network",
         ]
     )
     obj.manage_volumes(
         [
+            "rinnegan-registry-volume",
             "rinnegan-database-volume",
             "rinnegan-queue-volume",
-            "rinnegan-registry-volume",
             "rinnegan-streaming-volume",
         ]
     )
-    obj.manage_secrets(["database", "backend", "streaming"])
+    obj.manage_secrets(["database", "queue", "streaming", "backend"])
