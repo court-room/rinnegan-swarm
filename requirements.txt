@@ -1,4 +1,4 @@
-docker==4.3.1
+docker==4.4.1
 
 black==20.8b1
 flake8==3.8.4
